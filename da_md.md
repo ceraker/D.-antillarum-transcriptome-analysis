@@ -1,6 +1,6 @@
 # __*D. antillarum* transcriptome analysis__
 #### Author: Cassie Raker
-#### Last updated: June 19, 2019
+#### Last updated: October 18, 2019
 
 #### Data uploaded and analyzed on KITT
 
