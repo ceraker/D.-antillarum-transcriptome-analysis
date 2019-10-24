@@ -366,6 +366,9 @@ salmon.isoform.counts.matrix.pH_lowx_vs_pH_medx.DESeq2.DE_results.MA_n_Volcano.p
 salmon.isoform.counts.matrix.pH_lowx_vs_pH_medx.DESeq2.Rscript
 ```
 
+MA and Volcano plots of entire transcript examining high and low pH treatments
+![full transcript volcano plot] (https://github.com/ceraker/D.-antillarum-transcriptome-analysis/blob/master/figures/salmon.isoform.counts.matrix.pH_high_vs_pH_lowx.DESeq2.DE_results.MA_n_Volcano.pdf)
+
 
 To extract and cluster differentially expressed transcripts, I would use this script:
 ```
@@ -393,8 +396,14 @@ diffExpr.P0.001_C2.matrix.log2.centered.sample_cor_matrix.pdf
 diffExpr.P0.001_C2.matrix.R
 diffExpr.P0.001_C2.matrix.RData
 ```
+Correlation heatmap on unfiltered samples
+[unfiltered heatmap](https://github.com/ceraker/D.-antillarum-transcriptome-analysis/blob/master/figures/diffExpr.P0.001_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf)
 
 DESeq2 analysis was then run on the two filtered matrices.
+
+Heatmaps for two filtered matrices
+[Expr1 heatmap](https://github.com/ceraker/D.-antillarum-transcriptome-analysis/blob/master/figures/filter_expr1.diffExpr.P0.001_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf)
+[HIO heatmap](https://github.com/ceraker/D.-antillarum-transcriptome-analysis/blob/master/figures/filter_hio.diffExpr.P0.001_C2.matrix.log2.centered.genes_vs_samples_heatmap.pdf)
 
 DESeq2 was attempted on te filtered fasta file, but no significantly differentially expressed genes were found.
 ```
