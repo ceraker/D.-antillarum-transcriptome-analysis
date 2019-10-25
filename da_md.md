@@ -401,7 +401,8 @@ Correlation heatmap on unfiltered samples
 
 DESeq2 analysis was then run on the two filtered matrices.
 
-Heatmaps for two filtered matrices
+Heatmaps for two filtered matrices:
+
 ![Expr1 heatmap](https://github.com/ceraker/D.-antillarum-transcriptome-analysis/blob/master/figures/filter_expr1.diffExpr.P0.001_C2.matrix.log2.centered.genes_vs_samples_heatmap.png)
 ![HIO heatmap](https://github.com/ceraker/D.-antillarum-transcriptome-analysis/blob/master/figures/filter_hio.diffExpr.P0.001_C2.matrix.log2.centered.genes_vs_samples_heatmap.png)
 
