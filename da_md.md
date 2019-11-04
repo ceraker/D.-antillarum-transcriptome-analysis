@@ -1,6 +1,6 @@
 # __*D. antillarum* transcriptome analysis__
 #### Author: Cassie Raker
-#### Last updated: October 24, 2019
+#### Last updated: November 4, 2019
 
 #### Data uploaded and analyzed on KITT
 
@@ -162,10 +162,10 @@ rename best fasta file (so it's easy to find later)
 mv cdhit89.transdecoder.pep.fasta diadema.best.fasta
 ```
 
-##### Blast files using Trinnotate
-Trinnotate is used to annotate files.
+##### Blast files using Trinotate
+Trinotate is used to annotate files.
 
-Install Trinnotate
+Install Trinotate
 ```
 wget https://github.com/Trinotate/Trinotate/archive/Trinotate-v3.1.1.zip
 unzip Trinotate-v3.1.1.zip
@@ -252,6 +252,41 @@ filterbyname.sh in=da.trinity.fasta names=onecolumn.txt out=da.filtered.fasta \
 include=t substring=t
 ```
 Use the da.filtered.fasta file for further downstream analysis
+
+##### Use Trinotate to annotate the filtered fasta file
+Install other necessary programs
+```
+conda install hmmer
+conda install perl-dbd-sqlite
+```
+Run TransDecoder on the filtered fasta file
+```
+TransDecoder.LongOrfs -t da.filtered.fasta
+TransDecoder.Predict -t da.filtered.fasta
+```
+Blast the peptide file
+```
+blastp -query /home/craker/diadema/da.filtered.fasta.transdecoder.pep -db /home/craker/diadema/Trinotate-Trinotate-v3.1.1/uniprot_sprot.pep -num_threads 20 -max_target_seqs 1 -outfmt 6 -evalue 1e-3 > blastp.outfmt6
+```
+Run HMMER
+```
+hmmscan --cpu 20 --domtblout TrinotatePFAM.out Pfam-A.hmm da.filtered.fasta.transdecoder.pep > pfam.log
+```
+Load files into an SQLite database
+```
+/home/craker/diadema/Trinotate-Trinotate-v3.1.1/Trinotate Trinotate.sqlite init --gene_trans_map da.filtered.fasta.gene_trans_map --transcript_fasta da.filtered.fasta --transdecoder_pep da.filtered.fasta.transdecoder.pep
+/home/craker/diadema/Trinotate-Trinotate-v3.1.1/Trinotate Trinotate.sqlite LOAD_swissprot_blastp blastp.filtered.outfmt6
+/home/craker/diadema/Trinotate-Trinotate-v3.1.1/Trinotate Trinotate.sqlite LOAD_pfam TrinotatePFAM.out
+/home/craker/diadema/Trinotate-Trinotate-v3.1.1/Trinotate Trinotate.sqlite LOAD_swissprot_blastx blastx.filtered.outfmt6
+```
+Generate a gene/transcript relationship file using TRINITY
+```
+/home/craker/diadema/trinityrnaseq-Trinity-v2.8.4/util/support_scripts/get_Trinity_gene_to_trans_map.pl da.filtered.fasta > da.filtered.fasta.gene_trans_map
+```
+Generate a Trinotate annotation report
+```
+/home/craker/diadema/Trinotate-Trinotate-v3.1.1/Trinotate Trinotate.sqlite report > da.filtered.trinotate_annotation_report.xls
+```
 
 ##### Trinity transcript quantification
 Necessary to perform further downstream analysis.
