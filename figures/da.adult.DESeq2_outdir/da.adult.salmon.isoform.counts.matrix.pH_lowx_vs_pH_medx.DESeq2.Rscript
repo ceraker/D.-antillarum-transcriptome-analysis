@@ -1,0 +1,38 @@
+if (! require(edgeR)) {
+   source("https://bioconductor.org/biocLite.R")
+   biocLite("edgeR")
+   library(edgeR)
+}
+
+if (! require(DESeq2)) {
+   source("https://bioconductor.org/biocLite.R")
+   biocLite("DESeq2")
+   library(DESeq2)
+}
+
+data = read.table("/home/craker/diadema/da.adult.salmon_out_dir/da.adult.salmon.isoform.counts.matrix", header=T, row.names=1, com='')
+col_ordering = c(8,9,10,11,5,6,7)
+rnaseqMatrix = data[,col_ordering]
+rnaseqMatrix = round(rnaseqMatrix)
+rnaseqMatrix = rnaseqMatrix[rowSums(cpm(rnaseqMatrix) > 1) >= 2,]
+conditions = data.frame(conditions=factor(c(rep("pH_lowx", 4), rep("pH_medx", 3))))
+rownames(conditions) = colnames(rnaseqMatrix)
+ddsFullCountTable <- DESeqDataSetFromMatrix(
+    countData = rnaseqMatrix,
+    colData = conditions,
+    design = ~ conditions)
+dds = DESeq(ddsFullCountTable)
+contrast=c("conditions","pH_lowx","pH_medx")
+res = results(dds, contrast)
+baseMeanA <- rowMeans(counts(dds, normalized=TRUE)[,colData(dds)$conditions == "pH_lowx"])
+baseMeanB <- rowMeans(counts(dds, normalized=TRUE)[,colData(dds)$conditions == "pH_medx"])
+res = cbind(baseMeanA, baseMeanB, as.data.frame(res))
+res = cbind(sampleA="pH_lowx", sampleB="pH_medx", as.data.frame(res))
+res$padj[is.na(res$padj)]  <- 1
+res = as.data.frame(res[order(res$pvalue),])
+write.table(res, file='da.adult.salmon.isoform.counts.matrix.pH_lowx_vs_pH_medx.DESeq2.DE_results', sep='	', quote=FALSE)
+write.table(rnaseqMatrix, file='da.adult.salmon.isoform.counts.matrix.pH_lowx_vs_pH_medx.DESeq2.count_matrix', sep='	', quote=FALSE)
+source("/home/craker/diadema/trinityrnaseq-Trinity-v2.8.4/Analysis/DifferentialExpression/R/rnaseq_plot_funcs.R")
+pdf("da.adult.salmon.isoform.counts.matrix.pH_lowx_vs_pH_medx.DESeq2.DE_results.MA_n_Volcano.pdf")
+plot_MA_and_Volcano(rownames(res), log2(res$baseMean+1), res$log2FoldChange, res$padj)
+dev.off()
